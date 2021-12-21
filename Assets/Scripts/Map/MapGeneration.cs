@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class MapGeneration : MonoBehaviour
@@ -9,36 +10,116 @@ public class MapGeneration : MonoBehaviour
     public int maxTiles;
     public GameObject floorTile;
     public GameObject border;
-    List<GameObject> mapTiles = new List<GameObject>();
+    public List<GameObject> mapTiles = new List<GameObject>();
     public float wallThickness;
     public int minWidth;
     public int maxWidth;
     public int minHeight;
     public int maxHeight;
+    public int minMovementTile;
+    public int maxMovementTile;
     // Start is called before the first frame update
     void Start()
     {
-        GenerateMap();
-        SortTiles();
-    }
-
-    private void SortTiles()
-    {
-        for (int i = 0; i < mapTiles.Count; i++)
+        GenerateMapTiles();
+        LayoutMap();
+        mapTiles.ForEach(fl => fl.GetComponent<CollisionDetection>().ShouldCheckForCollision = true);
+        foreach (var item in mapTiles)
         {
-            if (i == 0)
-            {
-                mapTiles[i].transform.position = new Vector2(0, 0);
-            }
-            else
-            {
-                float distance = ((mapTiles[i - 1].transform.position.x + (mapTiles[i - 1].GetComponent<SpriteRenderer>().size.x / 2)) + (mapTiles[i].GetComponent<SpriteRenderer>().size.x / 2)) + 0.1F;
-                mapTiles[i].transform.position = new Vector2( distance, 0);
-            }
+            item.GetComponent<CollisionDetection>().Checkpriority();
         }
     }
 
-    private void GenerateMap()
+    private void LayoutMap()
+    {
+        for (int floorcount = 1; floorcount < mapTiles.Count; floorcount++)
+        {
+            GeneratePositionMapTile(mapTiles[floorcount]);
+        }
+    }
+
+    public void GeneratePositionMapTile(GameObject currentFloor)
+    {
+        int spacing = 1;
+        float xValueForMapTilePosition = 0;
+        float yValueForMapTilePosition = 0;
+        List<int> movement = new List<int>();
+        int movements = UnityEngine.Random.Range(minMovementTile, maxMovementTile);
+        for (int i = 0; i < movements; i++)
+        {
+            int current = UnityEngine.Random.Range(1, 5);
+            movement.Add(current);
+        }
+        foreach (var moving in movement)
+        {
+            switch (moving)
+            {
+                //left
+                case 1:
+                    GameObject obj = mapTiles.Where(fl => fl.transform.position.y == yValueForMapTilePosition).OrderByDescending(fl => fl.transform.position.x).FirstOrDefault();
+                    xValueForMapTilePosition = obj.transform.position.x;
+                    break;
+                //right
+                case 2:
+                    GameObject obj2 = mapTiles.Where(fl => fl.transform.position.y == yValueForMapTilePosition).OrderBy(fl => fl.transform.position.x).FirstOrDefault();
+                    xValueForMapTilePosition = obj2.transform.position.x;
+                    break;
+                //up
+                case 3:
+                    GameObject obj3 = mapTiles.Where(fl => fl.transform.position.x == xValueForMapTilePosition).OrderByDescending(fl => fl.transform.position.y).FirstOrDefault();
+                    yValueForMapTilePosition = obj3.transform.position.y;
+                    break;
+                //down
+                case 4:
+                    GameObject obj4 = mapTiles.Where(fl => fl.transform.position.x == xValueForMapTilePosition).OrderBy(fl => fl.transform.position.y).FirstOrDefault();
+                    yValueForMapTilePosition = obj4.transform.position.y;
+                    break;
+                default:
+                    break;
+            }
+        }
+        int lastOne = UnityEngine.Random.Range(1, 5);
+        switch (lastOne)
+        {
+            //right
+            case 1:
+                GameObject obj = mapTiles.Where(fl => fl.transform.position.y == yValueForMapTilePosition).OrderByDescending(fl => fl.transform.position.x).FirstOrDefault();
+                xValueForMapTilePosition = obj.transform.position.x;
+                xValueForMapTilePosition += (obj.GetComponent<SpriteRenderer>().size.x / 2);
+                xValueForMapTilePosition += (currentFloor.GetComponent<SpriteRenderer>().size.x / 2) + spacing;
+                currentFloor.GetComponent<CollisionDetection>().attachedTo = obj;
+                break;
+            //left
+            case 2:
+                GameObject obj2 = mapTiles.Where(fl => fl.transform.position.y == yValueForMapTilePosition).OrderBy(fl => fl.transform.position.x).FirstOrDefault();
+                xValueForMapTilePosition = obj2.transform.position.x;
+                xValueForMapTilePosition -= (obj2.GetComponent<SpriteRenderer>().size.x / 2);
+                xValueForMapTilePosition -= (currentFloor.GetComponent<SpriteRenderer>().size.x / 2) + spacing;
+                currentFloor.GetComponent<CollisionDetection>().attachedTo = obj2;
+                break;
+            //up
+            case 3:
+                GameObject obj3 = mapTiles.Where(fl => fl.transform.position.x == xValueForMapTilePosition).OrderByDescending(fl => fl.transform.position.y).FirstOrDefault();
+                yValueForMapTilePosition = obj3.transform.position.y;
+                yValueForMapTilePosition += (obj3.GetComponent<SpriteRenderer>().size.y / 2);
+                yValueForMapTilePosition += (currentFloor.GetComponent<SpriteRenderer>().size.y / 2) + spacing;
+                currentFloor.GetComponent<CollisionDetection>().attachedTo = obj3;
+                break;
+            //down
+            case 4:
+                GameObject obj4 = mapTiles.Where(fl => fl.transform.position.x == xValueForMapTilePosition).OrderBy(fl => fl.transform.position.y).FirstOrDefault();
+                yValueForMapTilePosition = obj4.transform.position.y;
+                yValueForMapTilePosition -= (obj4.GetComponent<SpriteRenderer>().size.y / 2);
+                yValueForMapTilePosition -= (currentFloor.GetComponent<SpriteRenderer>().size.y / 2) + spacing;
+                currentFloor.GetComponent<CollisionDetection>().attachedTo = obj4;
+                break;
+            default:
+                break;
+        }
+       currentFloor.transform.position = new Vector2(xValueForMapTilePosition, yValueForMapTilePosition);
+    }
+
+    private void GenerateMapTiles()
     {
         int amountOfMaptiles = UnityEngine.Random.Range(minTiles, maxTiles + 1);
 
@@ -50,23 +131,29 @@ public class MapGeneration : MonoBehaviour
             floor.transform.parent = this.gameObject.transform;
             SpriteRenderer floorrenderer = floor.GetComponent<SpriteRenderer>();
             floorrenderer.drawMode = SpriteDrawMode.Tiled;
-            floorrenderer.size = new Vector2(xValue, yValue);
-            GameObject leftBorder = Instantiate(border, new Vector2(0, 0), Quaternion.identity); // Left
-            GameObject rightBorder = Instantiate(border, new Vector2(0, 0), Quaternion.identity); // Right
-            GameObject topBorder = Instantiate(border, new Vector2(0, 0), Quaternion.identity); // Top
-            GameObject bottomBorder = Instantiate(border, new Vector2(0,0), Quaternion.identity); // Bottom
+            floorrenderer.size = new Vector2((xValue - 0.4F), (yValue -0.4F));
+            floor.GetComponent<BoxCollider2D>().size = new Vector2(xValue, yValue);
+            GameObject leftBorder = Instantiate(border, new Vector2(2, 0), Quaternion.identity); // Left
+            GameObject rightBorder = Instantiate(border, new Vector2(2, 0), Quaternion.identity); // Right
+            GameObject topBorder = Instantiate(border, new Vector2(2, 0), Quaternion.identity); // Top
+            GameObject bottomBorder = Instantiate(border, new Vector2(2,0), Quaternion.identity); // Bottom
 
             leftBorder.GetComponent<SpriteRenderer>().drawMode = SpriteDrawMode.Tiled;
             leftBorder.GetComponent<SpriteRenderer>().size = new Vector2(leftBorder.GetComponent<SpriteRenderer>().size.x, yValue);
+            leftBorder.GetComponent<BoxCollider2D>().size = new Vector2(leftBorder.GetComponent<SpriteRenderer>().size.x, yValue);
+
 
             rightBorder.GetComponent<SpriteRenderer>().drawMode = SpriteDrawMode.Tiled;
             rightBorder.GetComponent<SpriteRenderer>().size = new Vector2(rightBorder.GetComponent<SpriteRenderer>().size.x, yValue);
+            rightBorder.GetComponent<BoxCollider2D>().size = new Vector2(rightBorder.GetComponent<SpriteRenderer>().size.x, yValue);
 
             topBorder.GetComponent<SpriteRenderer>().drawMode = SpriteDrawMode.Tiled;
             topBorder.GetComponent<SpriteRenderer>().size = new Vector2(topBorder.GetComponent<SpriteRenderer>().size.x, xValue);
+            topBorder.GetComponent<BoxCollider2D>().size = new Vector2(topBorder.GetComponent<SpriteRenderer>().size.x, xValue);
 
             bottomBorder.GetComponent<SpriteRenderer>().drawMode = SpriteDrawMode.Tiled;
             bottomBorder.GetComponent<SpriteRenderer>().size = new Vector2(bottomBorder.GetComponent<SpriteRenderer>().size.x, xValue);
+            bottomBorder.GetComponent<BoxCollider2D>().size = new Vector2(bottomBorder.GetComponent<SpriteRenderer>().size.x, xValue);
 
             leftBorder.transform.parent = floor.transform;
             rightBorder.transform.parent = floor.transform;
@@ -86,7 +173,7 @@ public class MapGeneration : MonoBehaviour
             rightBorder.name = "right";
             topBorder.name = "top";
             bottomBorder.name = "bottom";
-
+            floor.name = $"floor{i}";
             mapTiles.Add(floor);
         }
     }
