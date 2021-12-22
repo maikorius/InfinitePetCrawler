@@ -132,38 +132,38 @@ public class MapGeneration : MonoBehaviour
             SpriteRenderer floorrenderer = floor.GetComponent<SpriteRenderer>();
             floorrenderer.drawMode = SpriteDrawMode.Tiled;
             floorrenderer.size = new Vector2((xValue - 0.4F), (yValue -0.4F));
-            floor.GetComponent<BoxCollider2D>().size = new Vector2(xValue, yValue);
-            GameObject leftBorder = Instantiate(border, new Vector2(2, 0), Quaternion.identity); // Left
-            GameObject rightBorder = Instantiate(border, new Vector2(2, 0), Quaternion.identity); // Right
-            GameObject topBorder = Instantiate(border, new Vector2(2, 0), Quaternion.identity); // Top
-            GameObject bottomBorder = Instantiate(border, new Vector2(2,0), Quaternion.identity); // Bottom
+            floor.GetComponent<BoxCollider2D>().size = floorrenderer.size;
+            GameObject leftBorder = Instantiate(border, new Vector2(0, 0), Quaternion.identity); // Left
+            GameObject rightBorder = Instantiate(border, new Vector2(0, 0), Quaternion.identity); // Right
+            GameObject topBorder = Instantiate(border, new Vector2(0, 0), Quaternion.identity); // Top
+            GameObject bottomBorder = Instantiate(border, new Vector2(0, 0), Quaternion.identity); // Bottom
 
             leftBorder.GetComponent<SpriteRenderer>().drawMode = SpriteDrawMode.Tiled;
-            leftBorder.GetComponent<SpriteRenderer>().size = new Vector2(leftBorder.GetComponent<SpriteRenderer>().size.x, yValue);
-            leftBorder.GetComponent<BoxCollider2D>().size = new Vector2(leftBorder.GetComponent<SpriteRenderer>().size.x, yValue);
+            leftBorder.GetComponent<SpriteRenderer>().size = new Vector2(wallThickness, floor.GetComponent<SpriteRenderer>().size.y);
+            leftBorder.GetComponent<BoxCollider2D>().size = new Vector2(wallThickness, floor.GetComponent<SpriteRenderer>().size.y);
 
 
             rightBorder.GetComponent<SpriteRenderer>().drawMode = SpriteDrawMode.Tiled;
-            rightBorder.GetComponent<SpriteRenderer>().size = new Vector2(rightBorder.GetComponent<SpriteRenderer>().size.x, yValue);
-            rightBorder.GetComponent<BoxCollider2D>().size = new Vector2(rightBorder.GetComponent<SpriteRenderer>().size.x, yValue);
+            rightBorder.GetComponent<SpriteRenderer>().size = new Vector2(wallThickness, floor.GetComponent<SpriteRenderer>().size.y);
+            rightBorder.GetComponent<BoxCollider2D>().size = new Vector2(wallThickness, floor.GetComponent<SpriteRenderer>().size.y);
 
             topBorder.GetComponent<SpriteRenderer>().drawMode = SpriteDrawMode.Tiled;
-            topBorder.GetComponent<SpriteRenderer>().size = new Vector2(topBorder.GetComponent<SpriteRenderer>().size.x, xValue);
-            topBorder.GetComponent<BoxCollider2D>().size = new Vector2(topBorder.GetComponent<SpriteRenderer>().size.x, xValue);
+            topBorder.GetComponent<SpriteRenderer>().size = new Vector2(wallThickness, floor.GetComponent<SpriteRenderer>().size.x);
+            topBorder.GetComponent<BoxCollider2D>().size = new Vector2(wallThickness, floor.GetComponent<SpriteRenderer>().size.x);
 
             bottomBorder.GetComponent<SpriteRenderer>().drawMode = SpriteDrawMode.Tiled;
-            bottomBorder.GetComponent<SpriteRenderer>().size = new Vector2(bottomBorder.GetComponent<SpriteRenderer>().size.x, xValue);
-            bottomBorder.GetComponent<BoxCollider2D>().size = new Vector2(bottomBorder.GetComponent<SpriteRenderer>().size.x, xValue);
+            bottomBorder.GetComponent<SpriteRenderer>().size = new Vector2(wallThickness, floor.GetComponent<SpriteRenderer>().size.x);
+            bottomBorder.GetComponent<BoxCollider2D>().size = new Vector2(wallThickness, floor.GetComponent<SpriteRenderer>().size.x);
 
             leftBorder.transform.parent = floor.transform;
             rightBorder.transform.parent = floor.transform;
             topBorder.transform.parent = floor.transform;
             bottomBorder.transform.parent = floor.transform;
 
-            leftBorder.transform.localPosition = new Vector2((0 - (floorrenderer.size.x / 2) + (wallThickness / 2)), 0); // Left
-            rightBorder.transform.localPosition = new Vector2(((floorrenderer.size.x / 2) - (wallThickness / 2)), 0); // Right
-            topBorder.transform.localPosition = new Vector2(0, (floorrenderer.size.y / 2) - (wallThickness / 2)); // Top
-            bottomBorder.transform.localPosition = new Vector2(0, 0 - (floorrenderer.size.y / 2) + (wallThickness / 2)); // Bottom
+            leftBorder.transform.localPosition = new Vector2((0 - (floorrenderer.size.x / 2) + (wallThickness / 10)), 0); // Left
+            rightBorder.transform.localPosition = new Vector2(((floorrenderer.size.x / 2) - (wallThickness / 10)), 0); // Right
+            topBorder.transform.localPosition = new Vector2(0, (floorrenderer.size.y / 2) - (wallThickness / 10)); // Top
+            bottomBorder.transform.localPosition = new Vector2(0, 0 - (floorrenderer.size.y / 2) + (wallThickness / 10)); // Bottom
 
 
             topBorder.transform.Rotate(Vector3.back * 90);
