@@ -235,8 +235,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: beea2baa1f893f3488fbc6ced6b60e39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minTiles: 50
-  maxTiles: 100
+  minTiles: 150
+  maxTiles: 200
   floorTile: {fileID: 8832548150810465899, guid: fe2ee2a088e459e429ed22ce759bd371, type: 3}
   border: {fileID: 3856535044355816987, guid: f70cd56c4bae94a4585e8e5fb13a5a87, type: 3}
   mapTiles: []
@@ -247,6 +247,7 @@ MonoBehaviour:
   maxHeight: 50
   minMovementTile: 1
   maxMovementTile: 10
+  currenFloorCount: 1
 --- !u!4 &1382250391
 Transform:
   m_ObjectHideFlags: 0
