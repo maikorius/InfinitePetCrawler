@@ -7,25 +7,17 @@ using UnityEngine;
 public class CollisionDetection : MonoBehaviour
 {
     public GameObject attachedTo;
-    public bool ShouldCheckForCollision = false;
-    public int PrioAttachBackwards;
-    public int PrioAttachForward;
-    public List<GameObject> connectedTiles;
-    public bool isPlacing = true;
+    //public bool isPlacing = true;
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.tag.ToUpper().Contains("FLOOR") && this.gameObject.tag.ToUpper().Contains("FLOOR"))
+        if (collision.gameObject.tag.ToUpper().Contains("FLOOR") && this.gameObject.tag.ToUpper().Contains("FLOOR") && collision.gameObject.activeInHierarchy)
         {
             Debug.Log($"CollisionDetected between {this.gameObject.name} and {collision.gameObject.name}");
             try
             {
                 int collisionNumber = Convert.ToInt32(collision.gameObject.name);
                 int thisNumber = Convert.ToInt32(this.gameObject.name);
-                if (collisionNumber > thisNumber)
-                {
-                    collision.gameObject.SetActive(false);
-                }
-                else
+                if (thisNumber > collisionNumber)
                 {
                     this.gameObject.SetActive(false);
                 }

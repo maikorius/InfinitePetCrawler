@@ -235,16 +235,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: beea2baa1f893f3488fbc6ced6b60e39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minTiles: 150
-  maxTiles: 200
+  minTiles: 10
+  maxTiles: 25
   floorTile: {fileID: 8832548150810465899, guid: fe2ee2a088e459e429ed22ce759bd371, type: 3}
   border: {fileID: 3856535044355816987, guid: f70cd56c4bae94a4585e8e5fb13a5a87, type: 3}
   mapTiles: []
-  wallThickness: 10
-  minWidth: 10
-  maxWidth: 50
-  minHeight: 10
-  maxHeight: 50
+  wallThickness: 30
+  xValue: 100
+  yValue: 50
   minMovementTile: 1
   maxMovementTile: 10
   currenFloorCount: 1
