@@ -6,16 +6,14 @@ using UnityEngine;
 
 public class MapGeneration : MonoBehaviour
 {
-    public int minTiles;
-    public int maxTiles;
     public GameObject floorTile;
     public GameObject border;
     public List<GameObject> mapTiles = new List<GameObject>();
     public float wallThickness;
     public int xValue;
     public int yValue;
-    public int minMovementTile;
-    public int maxMovementTile;
+    public int RandomMovementsTile;
+    public int Tiles;
     float xValueForMapTilePosition = 200;
     float yValueForMapTilePosition = 200;
     public int currenFloorCount = 1;
@@ -24,14 +22,12 @@ public class MapGeneration : MonoBehaviour
     {
         GenerateMapTiles();
         LayoutMap();
-        Debug.Log($"from the {mapTiles.Count} we could place {mapTiles.Where(w => w.activeInHierarchy).Count()}");
         mapTiles[0].GetComponent<SpriteRenderer>().color = Color.green;
         mapTiles[mapTiles.Count - 1].GetComponent<SpriteRenderer>().color = Color.red;
     }
     private void GenerateMapTiles()
     {
-        int amountOfMaptiles = UnityEngine.Random.Range(minTiles, maxTiles + 1);
-        for (int i = 0; i < amountOfMaptiles; i++)
+        for (int i = 0; i < Tiles; i++)
         {
             GameObject floor = Instantiate(floorTile, new Vector2(0, 0), Quaternion.identity);
             floor.SetActive(false);
@@ -107,8 +103,7 @@ public class MapGeneration : MonoBehaviour
     public List<int> GenerateMoveMents()
     {
         List<int> movement = new List<int>();
-        int movements = UnityEngine.Random.Range(minMovementTile, maxMovementTile);
-        for (int i = 0; i < movements; i++)
+        for (int i = 0; i < RandomMovementsTile; i++)
         {
             int current = UnityEngine.Random.Range(1, 5);
             movement.Add(current);
@@ -178,7 +173,6 @@ public class MapGeneration : MonoBehaviour
             default:
                 break;
         }
-        //currentFloor.GetComponent<CollisionDetection>().isPlacing = false;
     }
     private void SetFloorPosition(GameObject currentFloor, float xValue, float yValue)
     {

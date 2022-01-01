@@ -7,7 +7,6 @@ using UnityEngine;
 public class CollisionDetection : MonoBehaviour
 {
     public GameObject attachedTo;
-    //public bool isPlacing = true;
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.tag.ToUpper().Contains("FLOOR") && this.gameObject.tag.ToUpper().Contains("FLOOR") && collision.gameObject.activeInHierarchy)
